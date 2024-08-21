@@ -9,7 +9,7 @@ pip install pxia
 ```
 
 ```python
-from phoenixia import Hannibal
+from pxia import Hannibal
 model = Hannibal(a=2,b=1)
 model.push_to_hub("phxia/Hannibal")
 
