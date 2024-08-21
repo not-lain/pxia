@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 # shamelessly stolen from https://github.com/huggingface/huggingface_hub/blob/main/setup.py
 def get_version() -> str:
-    rel_path = "src/phoenixia/__init__.py"
+    rel_path = "src/pxia/__init__.py"
     with open(rel_path, "r") as fp:
         for line in fp.read().splitlines():
             if line.startswith("__version__"):
@@ -17,14 +17,14 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
     required = f.read().splitlines()
 
 setup(
-    name="phoenixia",
+    name="pxia",
     version=get_version(),
-    description="a repository for Phoenix-IA models",
+    description="a repository for PXIA models",
     long_description=pathlib.Path("README.md").read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",
-    Homepage="https://github.com/not-lain/phoenixia",
-    url="https://github.com/not-lain/phoenixia",
-    Issues="https://github.com/not-lain/phoenixia/issues",
+    Homepage="https://github.com/not-lain/pxia",
+    url="https://github.com/not-lain/pxia",
+    Issues="https://github.com/not-lain/pxia/issues",
     authors=[{"name": "hafedh hichri", "email": "hhichri60@gmail.com"}],
     license="Apache 2.0 License",
     package_dir={"": "src"},

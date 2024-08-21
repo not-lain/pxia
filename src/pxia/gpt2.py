@@ -20,7 +20,7 @@ pip install pxia
 ```
 
 ```python
-from phoenixia import GPT2
+from pxia import GPT2
 model = GPT2.from_pretrained("{{ repo_id | default("phxia/GPT2") }}")
 ```
 

@@ -17,7 +17,7 @@ pip install pxia
 ```
 
 ```python
-from phoenixia import Hannibal
+from pxia import Hannibal
 model = Hannibal.from_pretrained("{{ repo_id | default("phxia/Hannibal") }}")
 ```
 
