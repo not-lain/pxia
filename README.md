@@ -5,7 +5,7 @@ This repository is using Hugging Face's PyTorchModelHubMixin classes
 ## How to use
 
 ```
-pip install phoenixia
+pip install pxia
 ```
 
 ```python
@@ -17,4 +17,4 @@ pretrained_model = Hannibal.from_pretrained("phoenix-ia/Hannibal")
 ```
 
 
-![pheonixia](https://github.com/not-lain/phoenixia/blob/main/logo.png?raw=true)
+![pheonixia](https://github.com/not-lain/pxia/blob/main/logo.png?raw=true)
