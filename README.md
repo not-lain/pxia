@@ -1,4 +1,4 @@
-# phoenixia
+# PXIA
 A repository for phoenix-ia models 
 This repository is using Hugging Face's PyTorchModelHubMixin classes
 
