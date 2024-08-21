@@ -12,27 +12,27 @@ model_card_template = """
 
 This model has been pushed to the Hub using the [PytorchModelHubMixin](https://huggingface.co/docs/huggingface_hub/package_reference/mixins#huggingface_hub.PyTorchModelHubMixin) integration.
 
-Library: [Phoenix-IA]({{repo_url}})
+Library: [pxia]({{repo_url}})
 
 ## how to load
 ```
-pip install phoenixia
+pip install pxia
 ```
 
 ```python
 from phoenixia import GPT2
-model = GPT2.from_pretrained("{{ repo_id | default("phoenix-ia/GPT2") }}")
+model = GPT2.from_pretrained("{{ repo_id | default("phxia/GPT2") }}")
 ```
 
 ## Contributions
-Any contributions are welcome at https://github.com/not-lain/phoenixia 
+Any contributions are welcome at https://github.com/not-lain/pxia 
 
 ## Myth
 A phoenix is a legendary creature that was part of the ancient Phoenician empire, known for its barbarian warriors who with their general Hannibal fought against the Roman empire.
 
 The Phoenician empire perished and Tunis**IA** rose from its ashes.
 
-<img src="https://huggingface.co/spaces/phoenix-ia/README/resolve/main/logo.png"/>
+<img src="https://huggingface.co/spaces/phxia/README/resolve/main/logo.png"/>
 
 """
 

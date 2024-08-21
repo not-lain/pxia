@@ -11,9 +11,9 @@ pip install pxia
 ```python
 from phoenixia import Hannibal
 model = Hannibal(a=2,b=1)
-model.push_to_hub("phoenix-ia/Hannibal")
+model.push_to_hub("phxia/Hannibal")
 
-pretrained_model = Hannibal.from_pretrained("phoenix-ia/Hannibal")
+pretrained_model = Hannibal.from_pretrained("phxia/Hannibal")
 ```
 
 
