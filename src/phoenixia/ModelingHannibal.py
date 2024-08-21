@@ -37,9 +37,9 @@ The Phoenician empire perished and Tunis-IA rose from its ashes.
 class Hannibal(
     nn.Module,
     PyTorchModelHubMixin,
-    library_name="phoenixia",
-    repo_url="https://github.com/not-lain/phoenixia",
-    tags=["visual-question-answering", "phoenixia","hannibal"],
+    library_name="pxia",
+    repo_url="https://github.com/not-lain/pxia",
+    tags=["visual-question-answering", "pxia","hannibal"],
     model_card_template=model_card_template,
 ):
     """an AI model for visual question answering"""

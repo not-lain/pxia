@@ -90,9 +90,9 @@ class Block(nn.Module):
 class GPT2(
     nn.Module,
     PyTorchModelHubMixin,
-    library_name="phoenixia",
-    repo_url="https://github.com/not-lain/phoenixia",
-    tags=["text-generation", "phoenixia","hannibal"],
+    library_name="pxia",
+    repo_url="https://github.com/not-lain/pxia",
+    tags=["text-generation", "pxia","hannibal"],
     model_card_template=model_card_template
 ):
     """an AI model for visual question answering"""
