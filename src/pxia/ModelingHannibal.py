@@ -27,8 +27,6 @@ Any contributions are welcome at https://github.com/not-lain/pxia.
 ## Myth
 A phoenix is a legendary creature that was part of the ancient Phoenician empire, known for its barbarian warriors who with their general Hannibal fought against the Roman empire.
 
-The Phoenician empire perished and Tunis-IA rose from its ashes.
-
 <img src="https://huggingface.co/spaces/phxia/README/resolve/main/logo.png"/>
 
 """
