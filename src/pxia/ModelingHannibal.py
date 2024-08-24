@@ -39,7 +39,7 @@ class Hannibal(
     PyTorchModelHubMixin,
     library_name="pxia",
     repo_url="https://github.com/not-lain/pxia",
-    tags=["visual-question-answering", "pxia","hannibal"],
+    tags=["visual-question-answering", "pxia", "hannibal"],
     model_card_template=model_card_template,
 ):
     """an AI model for visual question answering"""
