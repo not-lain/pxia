@@ -3,8 +3,7 @@ import torch
 from torch import nn
 import math
 from torch.nn import functional as F
-from huggingface_hub import PyTorchModelHubMixin
-import inspect
+from huggingface_hub import PyTorchModelHubMixin, ModelCard
 
 model_card_template = """
 ---
@@ -193,3 +192,13 @@ class GPT2(
                 with torch.no_grad():
                     sd[k].copy_(sd_hf[k])
         return model
+
+    def generate_model_card(self, *args, **kwargs) -> ModelCard:
+        print("args = ",args)
+        print("kwargs = ",kwargs)
+        card = super().generate_model_card(*args, **kwargs)
+        # do whatever you want here and return the card
+        # card.data["tags"].append("I'm cool")
+        print("tags = ",card.data["tags"])
+        # card.card_data = "hi"
+        return card 
