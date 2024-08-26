@@ -119,7 +119,7 @@ class GPT2(
     """an AI model for visual question answering"""
 
     def __init__(
-        self, block_size=1024, vocab_size=50257, n_layer=11, n_head=12, n_embed=768
+        self, block_size:int=1024, vocab_size:int=50257, n_layer:int=11, n_head:int=12, n_embed:int=768
     ):
         super().__init__()
         self.vocab_size = vocab_size
@@ -164,7 +164,8 @@ class GPT2(
             print("Please install transformers library to load model weights from huggingface hub")
             return None
         model_hf  = AutoModelForCausalLM.from_pretrained(repo_id)
-        params = inspect.getargspec(cls.__init__)[0]
+        # params = inspect.getargspec(cls.__init__)[0]
+        params = ['vocab_size','n_layer','n_head']
         kwargs = {k: getattr(model_hf.config, k, None) for k in params}
         model = cls(**kwargs)
         # sanitize state_dict
