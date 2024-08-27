@@ -10,11 +10,11 @@ pip install pxia
 ```
 
 ```python
-from pxia import Hannibal
-model = Hannibal(a=2,b=1)
-model.push_to_hub("phxia/Hannibal")
+from pxia import GPT2
+model = GPT2(a=2,b=1)
+model.push_to_hub("phxia/gpt2")
 
-pretrained_model = Hannibal.from_pretrained("phxia/Hannibal")
+pretrained_model = Hannibal.from_pretrained("phxia/gpt2")
 ```
 
 
