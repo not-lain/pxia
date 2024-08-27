@@ -18,4 +18,4 @@ pretrained_model = Hannibal.from_pretrained("phxia/gpt2")
 ```
 
 
-![pheonixia](https://github.com/not-lain/pxia/blob/main/logo.png?raw=true)
+![pxia](https://github.com/not-lain/pxia/blob/main/logo.png?raw=true)
