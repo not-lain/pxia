@@ -3,7 +3,7 @@ import torch
 from torch import nn
 import math
 from torch.nn import functional as F
-from huggingface_hub import PyTorchModelHubMixin, ModelCard
+from huggingface_hub import PyTorchModelHubMixin
 
 model_card_template = """
 ---
@@ -118,8 +118,25 @@ class GPT2(
     """an AI model for visual question answering"""
 
     def __init__(
-        self, block_size:int=1024, vocab_size:int=50257, n_layer:int=11, n_head:int=12, n_embed:int=768
+        self,
+        block_size: int = 1024,
+        vocab_size: int = 50257,
+        n_layer: int = 11,
+        n_head: int = 12,
+        n_embed: int = 768,
     ):
+        """
+        Initialize the GPT2 model with the given parameters.
+
+        Args:
+            block_size (int, optional): The size of the input sequence. Defaults to 1024.
+            vocab_size (int, optional): The size of the vocabulary. Defaults to 5025
+            n_layer (int, optional): The number of layers in the transformer. Defaults to 11.
+            n_head (int, optional): The number of attention heads in each layer. Defaults to 12.
+            n_embed (int, optional): The size of the embedding layer. Defaults to 768.
+
+        """
+
         super().__init__()
         self.vocab_size = vocab_size
         self.n_embed = n_embed
@@ -139,6 +156,16 @@ class GPT2(
         self.lm_head = nn.Linear(n_embed, vocab_size, bias=False)
 
     def forward(self, ids: torch.Tensor):
+        """
+        This method computes the forward pass of the model.
+        It takes as input a tensor of token indices (ids) and computes the logits for the next token.
+
+        Args:
+            ids (torch.Tensor): A tensor of shape (B, T) containing token indices. B is the batch size
+
+        Returns:
+            torch.Tensor: A tensor of shape (B, T, vocab_size) containing the logits for the next token.
+        """
         B, T = ids.size()
         assert (
             T <= self.block_size
@@ -155,31 +182,54 @@ class GPT2(
         return x
 
     @classmethod
-    def from_origin(cls,repo_id:str) : 
-        # load model weights from huggingface hub
-        try : 
+    def from_origin(cls, repo_id: str):
+        """
+        Loads a pretrained model from original huggingface repo, adapts them to the current model and injects them
+        This due to mismatch in some layers (we are using Linear instead of Conv1D in the attention layer and other naming mismatches)
+        how to use :
+        ```python
+        >>> model = GPT2LMHeadModel.from_origin('openai-community/gpt2')
+        ```
+
+        """
+        try:
             from transformers import AutoModelForCausalLM
-        except ImportError : 
-            print("Please install transformers library to load model weights from huggingface hub")
+        except ImportError:
+            print(
+                "Please install transformers library to load model weights from huggingface hub"
+            )
             return None
-        model_hf  = AutoModelForCausalLM.from_pretrained(repo_id)
+        model_hf = AutoModelForCausalLM.from_pretrained(repo_id)
         # params = inspect.getargspec(cls.__init__)[0]
-        params = ['vocab_size','n_layer','n_head']
+        params = ["vocab_size", "n_layer", "n_head"]
         kwargs = {k: getattr(model_hf.config, k, None) for k in params}
         model = cls(**kwargs)
         # sanitize state_dict
         sd = model.state_dict()
         sd_keys = sd.keys()
-        sd_keys = [k for k in sd_keys if not k.endswith('.attn.bias')] # discard this mask / buffer, not a param
+        sd_keys = [
+            k for k in sd_keys if not k.endswith(".attn.bias")
+        ]  # discard this mask / buffer, not a param
         sd_hf = model_hf.state_dict()
         # copy while ensuring all of the parameters are aligned and match in names and shapes
         sd_keys_hf = sd_hf.keys()
-        sd_keys_hf = [k for k in sd_keys_hf if not k.endswith('.attn.masked_bias')] # ignore these, just a buffer
-        sd_keys_hf = [k for k in sd_keys_hf if not k.endswith('.attn.bias')] # same, just the mask (buffer)
-        transposed = ['attn.c_attn.weight', 'attn.c_proj.weight', 'mlp.c_fc.weight', 'mlp.c_proj.weight']
+        sd_keys_hf = [
+            k for k in sd_keys_hf if not k.endswith(".attn.masked_bias")
+        ]  # ignore these, just a buffer
+        sd_keys_hf = [
+            k for k in sd_keys_hf if not k.endswith(".attn.bias")
+        ]  # same, just the mask (buffer)
+        transposed = [
+            "attn.c_attn.weight",
+            "attn.c_proj.weight",
+            "mlp.c_fc.weight",
+            "mlp.c_proj.weight",
+        ]
         # basically the openai checkpoints use a "Conv1D" module, but we only want to use a vanilla Linear
         # this means that we have to transpose these weights when we import them
-        assert len(sd_keys_hf) == len(sd_keys), f"mismatched keys: {len(sd_keys_hf)} != {len(sd_keys)}"
+        assert len(sd_keys_hf) == len(
+            sd_keys
+        ), f"mismatched keys: {len(sd_keys_hf)} != {len(sd_keys)}"
         for k in sd_keys_hf:
             if any(k.endswith(w) for w in transposed):
                 # special treatment for the Conv1D weights we need to transpose
@@ -193,12 +243,13 @@ class GPT2(
                     sd[k].copy_(sd_hf[k])
         return model
 
-    def generate_model_card(self, *args, **kwargs) -> ModelCard:
-        print("args = ",args)
-        print("kwargs = ",kwargs)
-        card = super().generate_model_card(*args, **kwargs)
-        # do whatever you want here and return the card
-        # card.data["tags"].append("I'm cool")
-        print("tags = ",card.data["tags"])
-        # card.card_data = "hi"
-        return card 
+    ## WIP
+    # def generate_model_card(self, *args, **kwargs) -> ModelCard:
+    #     print("args = ",args)
+    #     print("kwargs = ",kwargs)
+    #     card = super().generate_model_card(*args, **kwargs)
+    #     # do whatever you want here and return the card
+    #     # card.data["tags"].append("I'm cool")
+    #     print("tags = ",card.data["tags"])
+    #     # card.card_data = "hi"
+    #     return card
