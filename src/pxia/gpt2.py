@@ -4,6 +4,7 @@ from torch import nn
 import math
 from torch.nn import functional as F
 from huggingface_hub import PyTorchModelHubMixin
+from typing import Optional, Tuple
 
 model_card_template = """
 ---
@@ -45,7 +46,7 @@ class MLP(nn.Module):
         self.c_fc = nn.Linear(n_embed, 4 * n_embed)
         self.c_proj = nn.Linear(4 * n_embed, n_embed)
 
-    def forward(self, x):
+    def forward(self, x: torch.LongTensor):
         x = F.gelu(self.c_fc(x), approximate="tanh")
         x = self.c_proj(x)
         return x
@@ -69,10 +70,10 @@ class CausalSelfAttention(nn.Module):
             ),
         )
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.LongTensor):
         B, T, C = x.size()  # batch_size, sequence length, embedding_dim (n_dim)
         qkv = self.c_attn(x)
-        q, k, v = qkv.split(self.n_embed, split_size=C)
+        q, k, v = qkv.split(self.n_embed, dim=2)
         # nh = number of heads, hs = head size
         k = k.view(B, T, self.n_head, C // self.n_head).transpose(
             1, 2
@@ -155,25 +156,26 @@ class GPT2(
         )
         self.lm_head = nn.Linear(n_embed, vocab_size, bias=False)
 
-    def forward(self, ids: torch.Tensor):
+    def forward(self, input_ids: Optional[torch.LongTensor] = None,attention_mask: Optional[torch.FloatTensor] = None,past_key_values: Optional[Tuple[Tuple[torch.Tensor]]] = None, labels: Optional[torch.LongTensor] = None,):
         """
         This method computes the forward pass of the model.
         It takes as input a tensor of token indices (ids) and computes the logits for the next token.
 
         Args:
-            ids (torch.Tensor): A tensor of shape (B, T) containing token indices. B is the batch size
+            input_ids (torch.Tensor): A tensor of shape (B, T) containing token indices. B is the batch size
+            
 
         Returns:
             torch.Tensor: A tensor of shape (B, T, vocab_size) containing the logits for the next token.
         """
-        B, T = ids.size()
+        B, T = input_ids.size()
         assert (
             T <= self.block_size
         ), f"cannot forward sequence of length {T}, block_size is {self.block_size}"
 
-        pos = torch.arange(0, T, dtype=torch.long, device=ids.device)  # shape T
+        pos = torch.arange(0, T, dtype=torch.long, device=input_ids.device)  # shape T
         pos_emb = self.transformer.wpe(pos)  # positional embedding of shape (T,n_embed)
-        tok_emb = self.transformer.wte(ids)
+        tok_emb = self.transformer.wte(input_ids)
         x = tok_emb + pos_emb
         for block in self.transformer.h:
             x = block(x)
@@ -242,14 +244,3 @@ class GPT2(
                 with torch.no_grad():
                     sd[k].copy_(sd_hf[k])
         return model
-
-    ## WIP
-    # def generate_model_card(self, *args, **kwargs) -> ModelCard:
-    #     print("args = ",args)
-    #     print("kwargs = ",kwargs)
-    #     card = super().generate_model_card(*args, **kwargs)
-    #     # do whatever you want here and return the card
-    #     # card.data["tags"].append("I'm cool")
-    #     print("tags = ",card.data["tags"])
-    #     # card.card_data = "hi"
-    #     return card
