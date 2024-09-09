@@ -1,7 +1,9 @@
 # PXIA
-A repository for phoenix-ia models 
+A repository for pxia models 
 
 This repository is using HuggingFace's PyTorchModelHubMixin classes
+
+[![Downloads](https://static.pepy.tech/badge/pxia)](https://pepy.tech/project/pxia)
 
 ## How to use
 
