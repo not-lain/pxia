@@ -156,14 +156,20 @@ class GPT2(
         )
         self.lm_head = nn.Linear(n_embed, vocab_size, bias=False)
 
-    def forward(self, input_ids: Optional[torch.LongTensor] = None,attention_mask: Optional[torch.FloatTensor] = None,past_key_values: Optional[Tuple[Tuple[torch.Tensor]]] = None, labels: Optional[torch.LongTensor] = None,):
+    def forward(
+        self,
+        input_ids: Optional[torch.LongTensor] = None,
+        attention_mask: Optional[torch.FloatTensor] = None,
+        past_key_values: Optional[Tuple[Tuple[torch.Tensor]]] = None,
+        labels: Optional[torch.LongTensor] = None,
+    ):
         """
         This method computes the forward pass of the model.
         It takes as input a tensor of token indices (ids) and computes the logits for the next token.
 
         Args:
             input_ids (torch.Tensor): A tensor of shape (B, T) containing token indices. B is the batch size
-            
+
 
         Returns:
             torch.Tensor: A tensor of shape (B, T, vocab_size) containing the logits for the next token.
@@ -193,8 +199,10 @@ class GPT2(
             shift_labels = labels[..., 1:].contiguous()
             # Flatten the tokens
             loss_fct = torch.nn.CrossEntropyLoss()
-            loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
-            return {"loss":loss,"logits":logits}
+            loss = loss_fct(
+                shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
+            )
+            return {"loss": loss, "logits": logits}
         return logits
 
     @classmethod
