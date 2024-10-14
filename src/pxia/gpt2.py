@@ -4,7 +4,7 @@ from torch import nn
 import math
 from torch.nn import functional as F
 from huggingface_hub import PyTorchModelHubMixin
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 model_card_template = """
 ---
@@ -26,7 +26,7 @@ model = GPT2.from_pretrained("{{ repo_id | default("phxia/GPT2") }}")
 ```
 
 ## Contributions
-Any contributions are welcome at https://github.com/not-lain/pxia 
+Any contributions are welcome at https://github.com/not-lain/pxia
 
 ## Myth
 A phoenix is a legendary creature that was part of the ancient Phoenician empire, known for its barbarian warriors who with their general Hannibal fought against the Roman empire.
@@ -266,3 +266,50 @@ class GPT2(
                 with torch.no_grad():
                     sd[k].copy_(sd_hf[k])
         return model
+
+    def generate(
+        self,
+        input_ids,
+        attention_mask,
+        num_tokens=10,
+        tokenizer=None,
+        return_generated_only=False,
+        **kwargs,
+    ) -> Union[torch.Tensor, str]:
+        """
+        Generate text from the model.
+        This method will generate text by repeatedly feeding the model's output back into itself.
+        It will stop generating text when it hits the end of text token or when it has generated `num_tokens` tokens.
+        Args:
+            input_ids (torch.Tensor): The input ids for the model. Shape: (batch_size, seq_len)
+            attention_mask (torch.Tensor): The attention mask for the model. Shape: (batch_size, seq_len)
+            num_tokens (int): The number of tokens to generate. Default: 10
+            tokenizer (transformers.PreTrainedTokenizer): The tokenizer to use for decoding the generated tokens. Default: None
+            return_generated_only (bool): Whether to return only the generated tokens or the full output from the model. Default: False
+            **kwargs: Additional keyword arguments to pass to the model.
+        Returns:
+            torch.Tensor: The generated tokens or the full output from the model, depending on the value of `return_generated_only` (torch.Tensor) or a string (str) if `tokenizer` is provided.
+        """
+        collect = []
+        for _ in range(10):
+            output = self(input_ids=input_ids, attention_mask=attention_mask)
+            output_id = torch.argmax(output[0, -1]).item()
+            collect.append(output_id)
+            if tokenizer and output_id == tokenizer.eos_token_id:
+                break
+            input_ids = torch.unsqueeze(
+                torch.cat([input_ids[0], torch.tensor([output_id])]), dim=0
+            )
+            attention_mask = torch.ones_like(input_ids)
+        # strip the input from the generated tokens
+        if return_generated_only:
+            if tokenizer is None:
+                return torch.tensor(collect)
+            else:
+                tokenizer.convert_tokens_to_string(
+                    tokenizer.convert_ids_to_tokens(collect)
+                )
+        if tokenizer is not None:
+            tokenizer.batch_decode(input_ids)[0]
+        else:
+            return input_ids
