@@ -224,7 +224,6 @@ class GPT2(
             )
             return None
         model_hf = AutoModelForCausalLM.from_pretrained(repo_id)
-        # params = inspect.getargspec(cls.__init__)[0]
         params = ["vocab_size", "n_layer", "n_head"]
         kwargs = {k: getattr(model_hf.config, k, None) for k in params}
         model = cls(**kwargs)
