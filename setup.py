@@ -13,7 +13,7 @@ def get_version() -> str:
 
 
 with open("requirements.txt", "r", encoding="utf-8") as f:
-    required = f.read().splitlines()
+    requirements = f.read().splitlines()
 
 setup(
     name="pxia",
@@ -39,5 +39,5 @@ setup(
     ],
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
-    install_requires=required,
+    install_requires=requirements,
 )
