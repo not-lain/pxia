@@ -271,7 +271,7 @@ class GPT2(
         self,
         input_ids,
         attention_mask,
-        num_tokens=10,
+        num_new_tokens=10,
         tokenizer=None,
         return_generated_only=False,
         **kwargs,
@@ -283,7 +283,7 @@ class GPT2(
         Args:
             input_ids (torch.Tensor): The input ids for the model. Shape: (batch_size, seq_len)
             attention_mask (torch.Tensor): The attention mask for the model. Shape: (batch_size, seq_len)
-            num_tokens (int): The number of tokens to generate. Default: 10
+            num_new_tokens (int): The number of new tokens to generate. Default: 10
             tokenizer (transformers.PreTrainedTokenizer): The tokenizer to use for decoding the generated tokens. Default: None
             return_generated_only (bool): Whether to return only the generated tokens or the full output from the model. Default: False
             **kwargs: Additional keyword arguments to pass to the model.
@@ -291,7 +291,7 @@ class GPT2(
             torch.Tensor: The generated tokens or the full output from the model, depending on the value of `return_generated_only` (torch.Tensor) or a string (str) if `tokenizer` is provided.
         """
         collect = []
-        for _ in range(10):
+        for _ in range(num_new_tokens):
             output = self(input_ids=input_ids, attention_mask=attention_mask)
             output_id = torch.argmax(output[0, -1]).item()
             collect.append(output_id)
