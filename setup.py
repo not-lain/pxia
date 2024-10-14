@@ -2,7 +2,6 @@ import pathlib
 from setuptools import find_packages, setup
 
 
-# shamelessly stolen from https://github.com/huggingface/huggingface_hub/blob/main/setup.py
 def get_version() -> str:
     rel_path = "src/pxia/__init__.py"
     with open(rel_path, "r") as fp:
