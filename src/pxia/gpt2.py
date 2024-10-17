@@ -33,14 +33,11 @@ pip install pxia
 
 ```python
 from pxia import GPT2
-model = GPT2.from_pretrained("{{ repo_id | default("phxia/GPT2") }}")
+model = GPT2.from_pretrained("{{ repo_id | default("phxia/gpt2", true) }}")
 ```
 
 ## Contributions
 Any contributions are welcome at https://github.com/not-lain/pxia
-
-## Myth
-A phoenix is a legendary creature that was part of the ancient Phoenician empire, known for its barbarian warriors who with their general Hannibal fought against the Roman empire.
 
 <img src="https://huggingface.co/spaces/phxia/README/resolve/main/logo.png"/>
 
@@ -124,7 +121,7 @@ class GPT2(
     PyTorchModelHubMixin,
     library_name="pxia",
     repo_url="https://github.com/not-lain/pxia",
-    tags=["text-generation", "pxia", "hannibal"],
+    tags=["text-generation", "pxia","gpt2"],
     model_card_template=model_card_template,
 ):
     """an AI model for visual question answering"""

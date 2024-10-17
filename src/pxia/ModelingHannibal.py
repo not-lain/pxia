@@ -1,6 +1,19 @@
 from torch import nn
 from huggingface_hub import PyTorchModelHubMixin
 
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
+
+if TYPE_CHECKING:
+    from _typeshed import DataclassInstance
+
 
 model_card_template = """
 ---
@@ -18,14 +31,11 @@ pip install pxia
 
 ```python
 from pxia import Hannibal
-model = Hannibal.from_pretrained("{{ repo_id | default("phxia/Hannibal") }}")
+model = Hannibal.from_pretrained("{{ repo_id | default("phxia/Hannibal", true ) }}")
 ```
 
 ## Contributions
 Any contributions are welcome at https://github.com/not-lain/pxia.
-
-## Myth
-A phoenix is a legendary creature that was part of the ancient Phoenician empire, known for its barbarian warriors who with their general Hannibal fought against the Roman empire.
 
 <img src="https://huggingface.co/spaces/phxia/README/resolve/main/logo.png"/>
 
@@ -48,3 +58,38 @@ class Hannibal(
 
     def forward(self, input_ids):
         return self.layer(input_ids)
+    
+    def push_to_hub(
+        self,
+        repo_id: str,
+        *,
+        config: Optional[Union[dict, "DataclassInstance"]] = None,
+        commit_message: str = "Push model using huggingface_hub.",
+        private: bool = False,
+        token: Optional[str] = None,
+        branch: Optional[str] = None,
+        create_pr: Optional[bool] = None,
+        allow_patterns: Optional[Union[List[str], str]] = None,
+        ignore_patterns: Optional[Union[List[str], str]] = None,
+        delete_patterns: Optional[Union[List[str], str]] = None,
+        model_card_kwargs: Optional[Dict[str, Any]] = None,
+    ) -> str:
+        if model_card_kwargs is None:
+            model_card_kwargs = {}
+        model_card_kwargs["repo_id"] = repo_id
+        return super().push_to_hub(
+            repo_id,
+            config=config,
+            commit_message=commit_message,
+            private=private,
+            token=token,
+            branch=branch,
+            create_pr=create_pr,
+            allow_patterns=allow_patterns,
+            ignore_patterns=ignore_patterns,
+            delete_patterns=delete_patterns,
+            model_card_kwargs=model_card_kwargs,
+        )
+
+
+Hannibal.push_to_hub.__doc__ = PyTorchModelHubMixin.push_to_hub.__doc__
