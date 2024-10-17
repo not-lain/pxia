@@ -4,7 +4,18 @@ from torch import nn
 import math
 from torch.nn import functional as F
 from huggingface_hub import PyTorchModelHubMixin
-from typing import Optional, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
+
+if TYPE_CHECKING:
+    from _typeshed import DataclassInstance
 
 model_card_template = """
 ---
@@ -312,3 +323,39 @@ class GPT2(
             return tokenizer.batch_decode(input_ids)[0]
         else:
             return input_ids
+
+    def push_to_hub(
+        self,
+        repo_id: str,
+        *,
+        config: Optional[Union[dict, "DataclassInstance"]] = None,
+        commit_message: str = "Push model using huggingface_hub.",
+        private: bool = False,
+        token: Optional[str] = None,
+        branch: Optional[str] = None,
+        create_pr: Optional[bool] = None,
+        allow_patterns: Optional[Union[List[str], str]] = None,
+        ignore_patterns: Optional[Union[List[str], str]] = None,
+        delete_patterns: Optional[Union[List[str], str]] = None,
+        model_card_kwargs: Optional[Dict[str, Any]] = None,
+    ) -> str:
+        if model_card_kwargs is None:
+            model_card_kwargs = {}
+        model_card_kwargs["repo_id"] = repo_id
+        return super().push_to_hub(
+            repo_id,
+            config=config,
+            commit_message=commit_message,
+            private=private,
+            token=token,
+            branch=branch,
+            create_pr=create_pr,
+            allow_patterns=allow_patterns,
+            ignore_patterns=ignore_patterns,
+            delete_patterns=delete_patterns,
+            model_card_kwargs=model_card_kwargs,
+        )
+
+
+# copy doctrings from PyTorchModelHubMixin
+GPT2.push_to_hub.__doc__ = PyTorchModelHubMixin.push_to_hub.__doc__
