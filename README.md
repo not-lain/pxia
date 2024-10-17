@@ -25,4 +25,11 @@ alternatively you can load weights from source gpt2 models from huggingface and 
 model = GPT2.from_origin("openai-community/gpt2")
 ```
 
+we also support `AutoModel` class in our repository
+to load any pxia model either locally or from the hub you can 
+```python
+from pxia import AutoModel
+model = AutoModel.from_pretrained("phxia/gpt2")
+```
+
 ![pxia](https://github.com/not-lain/pxia/blob/main/logo.png?raw=true)
