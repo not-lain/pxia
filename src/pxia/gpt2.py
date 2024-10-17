@@ -33,7 +33,7 @@ pip install pxia
 
 use the AutoModel class 
 ```python
-from from pxia AutoModel
+from pxia AutoModel
 model = AutoModel.from_pretrained("{{ repo_id | default("phxia/gpt2", true) }}")
 ```
 or you can use the model class directly

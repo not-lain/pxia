@@ -31,13 +31,13 @@ pip install pxia
 
 use the AutoModel class 
 ```python
-from from pxia AutoModel
-model = AutoModel.from_pretrained("{{ repo_id | default("phxia/gpt2", true) }}")
+from pxia AutoModel
+model = AutoModel.from_pretrained("{{ repo_id | default("phxia/hannibal", true) }}")
 ```
 or you can use the model class directly
 ```python
 from pxia import Hannibal
-model = Hannibal.from_pretrained("{{ repo_id | default("phxia/Hannibal", true ) }}")
+model = Hannibal.from_pretrained("{{ repo_id | default("phxia/hannibal", true ) }}")
 ```
 
 ## Contributions
