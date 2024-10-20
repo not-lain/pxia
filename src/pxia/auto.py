@@ -24,12 +24,15 @@ class AutoModel:
     @classmethod
     @set_doc(PyTorchModelHubMixin.from_pretrained.__doc__)
     def from_pretrained(cls, pretrained_model_name_or_path, *model_args, **kwargs):
-        f"{PyTorchModelHubMixin.from_pretrained.__doc__}"
-
+        
         tags = model_info(pretrained_model_name_or_path).tags
         if "gpt2" in tags:
-            return GPT2.from_pretrained(pretrained_model_name_or_path, *model_args, **kwargs)
+            return GPT2.from_pretrained(
+                pretrained_model_name_or_path, *model_args, **kwargs
+            )
         elif "hannibal" in tags:
-            return Hannibal.from_pretrained(pretrained_model_name_or_path, *model_args, **kwargs)
+            return Hannibal.from_pretrained(
+                pretrained_model_name_or_path, *model_args, **kwargs
+            )
         else:
             raise ValueError("this model is not part of pxia")
