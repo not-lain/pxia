@@ -1,19 +1,22 @@
 from torch import nn
 from huggingface_hub import PyTorchModelHubMixin
-
 from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
     List,
     Optional,
-    Tuple,
     Union,
 )
 
 if TYPE_CHECKING:
     from _typeshed import DataclassInstance
 
+
+from omegaconf import OmegaConf
+from omegaconf.dictconfig import DictConfig
+
+default_conf = OmegaConf.create({"a": 2, "b": 1})
 
 model_card_template = """
 ---
@@ -48,23 +51,38 @@ Any contributions are welcome at https://github.com/not-lain/pxia.
 """
 
 
+def serialize(x):
+    return OmegaConf.to_container(x)
+
+
+def deserialize(x):
+    return OmegaConf.create(x)
+
+
 class Hannibal(
     nn.Module,
     PyTorchModelHubMixin,
     library_name="pxia",
     repo_url="https://github.com/not-lain/pxia",
-    tags=["visual-question-answering", "pxia", "hannibal"],
+    tags=["pxia", "hannibal"],
     model_card_template=model_card_template,
+    coders={
+        DictConfig: (
+            lambda x: serialize(x),
+            lambda data: deserialize(data),
+        )
+    },
 ):
     """an AI model for visual question answering"""
 
-    def __init__(self, a=2, b=1):
+    def __init__(self, cfg: DictConfig = default_conf):
         super().__init__()
-        self.layer = nn.Linear(a, b, bias=False)
+        self.cfg = cfg
+        self.layer = nn.Linear(cfg.a, cfg.b, bias=False)
 
     def forward(self, input_ids):
         return self.layer(input_ids)
-    
+
     def push_to_hub(
         self,
         repo_id: str,
