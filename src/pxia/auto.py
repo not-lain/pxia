@@ -1,5 +1,5 @@
-from .gpt2 import GPT2
-from .ModelingHannibal import Hannibal
+from .modeling_gpt2 import GPT2
+from .modeling_ann import ANN
 from huggingface_hub import model_info, PyTorchModelHubMixin
 
 from functools import wraps
@@ -30,8 +30,8 @@ class AutoModel:
             return GPT2.from_pretrained(
                 pretrained_model_name_or_path, *model_args, **kwargs
             )
-        elif "hannibal" in tags:
-            return Hannibal.from_pretrained(
+        elif "ann" in tags:
+            return ANN.from_pretrained(
                 pretrained_model_name_or_path, *model_args, **kwargs
             )
         else:

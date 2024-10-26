@@ -1,5 +1,8 @@
 from torch import nn
-from huggingface_hub import PyTorchModelHubMixin
+from huggingface_hub import PyTorchModelHubMixin, whoami
+from omegaconf import OmegaConf
+from omegaconf.dictconfig import DictConfig
+
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -11,12 +14,6 @@ from typing import (
 
 if TYPE_CHECKING:
     from _typeshed import DataclassInstance
-
-
-from omegaconf import OmegaConf
-from omegaconf.dictconfig import DictConfig
-
-default_conf = OmegaConf.create({"a": 2, "b": 1})
 
 model_card_template = """
 ---
@@ -35,12 +32,12 @@ pip install pxia
 use the AutoModel class 
 ```python
 from pxia AutoModel
-model = AutoModel.from_pretrained("{{ repo_id | default("phxia/hannibal", true) }}")
+model = AutoModel.from_pretrained("{{ repo_id | default("phxia/ann", true) }}")
 ```
 or you can use the model class directly
 ```python
-from pxia import Hannibal
-model = Hannibal.from_pretrained("{{ repo_id | default("phxia/hannibal", true ) }}")
+from pxia import ANN
+model = ANN.from_pretrained("{{ repo_id | default("phxia/ann", true ) }}")
 ```
 
 ## Contributions
@@ -49,8 +46,11 @@ Any contributions are welcome at https://github.com/not-lain/pxia.
 <img src="https://huggingface.co/spaces/phxia/README/resolve/main/logo.png"/>
 
 """
+default_conf = OmegaConf.create({"a": 2, "b": 1})
 
 
+# we can't store OmegaConf directly in the config.json as init parameter
+# so we need to convert it to a dict
 def serialize(x):
     return OmegaConf.to_container(x)
 
@@ -59,12 +59,12 @@ def deserialize(x):
     return OmegaConf.create(x)
 
 
-class Hannibal(
+class ANN(
     nn.Module,
     PyTorchModelHubMixin,
     library_name="pxia",
     repo_url="https://github.com/not-lain/pxia",
-    tags=["pxia", "hannibal"],
+    tags=["pxia", "ann"],
     model_card_template=model_card_template,
     coders={
         DictConfig: (
@@ -83,6 +83,7 @@ class Hannibal(
     def forward(self, input_ids):
         return self.layer(input_ids)
 
+    # original push_to_hub method does not store the repo_id so we override it here
     def push_to_hub(
         self,
         repo_id: str,
@@ -100,6 +101,9 @@ class Hannibal(
     ) -> str:
         if model_card_kwargs is None:
             model_card_kwargs = {}
+        if "/" not in repo_id:
+            username = whoami()["name"]
+            repo_id = f"{username}/{repo_id}"
         model_card_kwargs["repo_id"] = repo_id
         return super().push_to_hub(
             repo_id,
@@ -116,4 +120,4 @@ class Hannibal(
         )
 
 
-Hannibal.push_to_hub.__doc__ = PyTorchModelHubMixin.push_to_hub.__doc__
+ANN.push_to_hub.__doc__ = PyTorchModelHubMixin.push_to_hub.__doc__
