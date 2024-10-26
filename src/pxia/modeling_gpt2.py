@@ -3,7 +3,7 @@ import torch
 from torch import nn
 import math
 from torch.nn import functional as F
-from huggingface_hub import PyTorchModelHubMixin
+from huggingface_hub import PyTorchModelHubMixin, whoami
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -127,7 +127,7 @@ class GPT2(
     PyTorchModelHubMixin,
     library_name="pxia",
     repo_url="https://github.com/not-lain/pxia",
-    tags=["text-generation", "pxia","gpt2"],
+    tags=["text-generation", "pxia", "gpt2"],
     model_card_template=model_card_template,
 ):
     """an AI model for visual question answering"""
@@ -344,6 +344,9 @@ class GPT2(
     ) -> str:
         if model_card_kwargs is None:
             model_card_kwargs = {}
+        if "/" not in repo_id:
+            username = whoami()["name"]
+            repo_id = f"{username}/{repo_id}"
         model_card_kwargs["repo_id"] = repo_id
         return super().push_to_hub(
             repo_id,
