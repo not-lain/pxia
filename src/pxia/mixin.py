@@ -1,7 +1,20 @@
 from huggingface_hub import PyTorchModelHubMixin, whoami
 
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Union,
+)
+
+if TYPE_CHECKING:
+    from _typeshed import DataclassInstance
+
+
 class Revised_Mixin(PyTorchModelHubMixin):
-      def push_to_hub(
+    def push_to_hub(
         self,
         repo_id: str,
         *,
@@ -35,4 +48,6 @@ class Revised_Mixin(PyTorchModelHubMixin):
             delete_patterns=delete_patterns,
             model_card_kwargs=model_card_kwargs,
         )
-Revised_Mixin..push_to_hub.__doc__ = PyTorchModelHubMixin.push_to_hub.__doc__
+
+
+Revised_Mixin.push_to_hub.__doc__ = PyTorchModelHubMixin.push_to_hub.__doc__

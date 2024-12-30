@@ -22,18 +22,13 @@ from torch import nn
 import math
 from torch.nn import functional as F
 from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
     Optional,
     Tuple,
     Union,
 )
-from mixin import Revised_Mixin
 
-if TYPE_CHECKING:
-    from _typeshed import DataclassInstance
+from .mixin import Revised_Mixin
+
 
 model_card_template = """
 ---
@@ -344,7 +339,3 @@ class GPT2(
             return tokenizer.batch_decode(input_ids)[0]
         else:
             return input_ids
-
- 
-
-

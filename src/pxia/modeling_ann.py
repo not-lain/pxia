@@ -1,19 +1,7 @@
 from torch import nn
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
-from mixin import Revised_Mixin
-
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Union,
-)
-
-if TYPE_CHECKING:
-    from _typeshed import DataclassInstance
+from .mixin import Revised_Mixin
 
 model_card_template = """
 ---
@@ -82,5 +70,3 @@ class ANN(
 
     def forward(self, input_ids):
         return self.layer(input_ids)
-
-
