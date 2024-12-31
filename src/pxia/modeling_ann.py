@@ -1,7 +1,7 @@
 from torch import nn
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
-from .mixin import Revised_Mixin
+from .torch_mixin import Revised_Mixin
 
 model_card_template = """
 ---

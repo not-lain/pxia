@@ -28,7 +28,7 @@ from typing import (
     Union,
 )
 
-from .mixin import Revised_Mixin
+from .torch_mixin import Revised_Mixin
 
 
 model_card_template = """

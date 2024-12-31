@@ -24,8 +24,9 @@ class AutoModel:
     @classmethod
     @set_doc(PyTorchModelHubMixin.from_pretrained.__doc__)
     def from_pretrained(cls, pretrained_model_name_or_path, *model_args, **kwargs):
-        
+        # we use model tags to figure out which architecture to use
         tags = model_info(pretrained_model_name_or_path).tags
+
         if "gpt2" in tags:
             return GPT2.from_pretrained(
                 pretrained_model_name_or_path, *model_args, **kwargs
